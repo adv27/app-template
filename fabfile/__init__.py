@@ -203,10 +203,7 @@ def check_timestamp():
     bucket = utils.get_bucket(app_config.S3_BUCKET)
     k = Key(bucket)
     k.key = '%s/live-data/timestamp.json' % app_config.PROJECT_SLUG
-    if k.exists():
-        return True
-    else:
-        return False
+    return bool(k.exists())
 
 @task
 def reset_browsers():

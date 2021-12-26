@@ -100,11 +100,7 @@ def create_tickets(auth, filename='etc/default_tickets.csv'):
     for ticket in tickets:
         logger.info('Creating ticket "%s"' % ticket['title'])
 
-        if ticket['labels']:
-            ticket['labels'] = ticket['labels'].split(',')
-        else:
-            ticket['labels'] = []
-
+        ticket['labels'] = ticket['labels'].split(',') if ticket['labels'] else []
         ticket['labels'].append('Default Ticket')
 
         data = json.dumps(ticket)

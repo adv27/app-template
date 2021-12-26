@@ -35,8 +35,7 @@ def go(github_username=app_config.GITHUB_USERNAME, repository_name=None):
     check_credentials()
     config_files = ' '.join(['PROJECT_README.md', 'app_config.py', 'crontab'])
 
-    config = {}
-    config['$NEW_PROJECT_SLUG'] = os.getcwd().split('/')[-1]
+    config = {'$NEW_PROJECT_SLUG': os.getcwd().split('/')[-1]}
     config['$NEW_REPOSITORY_NAME'] = repository_name or config['$NEW_PROJECT_SLUG']
     config['$NEW_PROJECT_FILENAME'] = config['$NEW_PROJECT_SLUG'].replace('-', '_')
     config['$NEW_DISQUS_UUID'] = str(uuid.uuid1())

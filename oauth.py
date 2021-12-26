@@ -69,10 +69,9 @@ def oauth_required(f):
         credentials = get_credentials()
         if app_config.COPY_GOOGLE_DOC_KEY and (not credentials or not credentials.valid):
             return redirect(url_for('_oauth.oauth_alert'))
-        else:
-            if request.args.get('refresh'):
-                get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
-            return f(*args, **kwargs)
+        if request.args.get('refresh'):
+            get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
+        return f(*args, **kwargs)
     return decorated_function
 
 def get_credentials():
@@ -107,9 +106,9 @@ def get_document(key, file_path, mimeType=None):
     """
     Uses Authomatic to get the google doc
     """
-    # Default to spreadsheet if no mimeType is passed
-    mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     if not mimeType:
+        # Default to spreadsheet if no mimeType is passed
+        mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         mimeType = mime
     credentials = get_credentials()
     url = DRIVE_API_EXPORT_TEMPLATE % (

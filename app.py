@@ -41,11 +41,7 @@ app.register_blueprint(static.static)
 app.register_blueprint(oauth.oauth)
 
 # Enable Werkzeug debug pages
-if app_config.DEBUG:
-    wsgi_app = DebuggedApplication(app, evalex=False)
-else:
-    wsgi_app = app
-
+wsgi_app = DebuggedApplication(app, evalex=False) if app_config.DEBUG else app
 # Catch attempts to run the app directly
 if __name__ == '__main__':
     logging.error('This command has been removed! Please run "fab app" instead!')

@@ -24,12 +24,11 @@ class BetterJSONEncoder(json.JSONEncoder):
     A JSON encoder that intelligently handles datetimes.
     """
     def default(self, obj):
-        if isinstance(obj, datetime):
-            encoded_object = obj.isoformat()
-        else:
-            encoded_object = json.JSONEncoder.default(self, obj)
-
-        return encoded_object
+        return (
+            obj.isoformat()
+            if isinstance(obj, datetime)
+            else json.JSONEncoder.default(self, obj)
+        )
 
 class Includer(object):
     """
@@ -167,14 +166,7 @@ def flatten_app_config():
     Returns a copy of app_config containing only
     configuration variables.
     """
-    config = {}
-
-    # Only all-caps [constant] vars get included
-    for k, v in app_config.__dict__.items():
-        if k.upper() == k:
-            config[k] = v
-
-    return config
+    return {k: v for k, v in app_config.__dict__.items() if k.upper() == k}
 
 def make_context(asset_depth=0):
     """

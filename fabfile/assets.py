@@ -36,13 +36,7 @@ def sync():
             full_path = os.path.join(local_path, name)
             glob_path = full_path.split(ASSETS_ROOT)[1].strip('/')
 
-            ignore = False
-
-            for ignore_glob in ignore_globs:
-                if fnmatch(glob_path, ignore_glob):
-                    ignore = True
-                    break
-
+            ignore = any(fnmatch(glob_path, ignore_glob) for ignore_glob in ignore_globs)
             if ignore:
                 logger.info('Ignoring: %s' % full_path)
                 continue
@@ -102,10 +96,10 @@ def sync():
 
                     return
 
-                if which == 'remote':
-                    download = True
-                elif which == 'local':
+                if which == 'local':
                     upload = True
+                elif which == 'remote':
+                    download = True
         else:
             download = True
 

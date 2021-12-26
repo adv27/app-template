@@ -45,11 +45,7 @@ def deploy_file(bucket, src, dst, headers={}, public=True):
                 'charset=utf-8'])
 
     # Define policy
-    if public:
-        policy = 'public-read'
-    else:
-        policy = 'private'
-
+    policy = 'public-read' if public else 'private'
     # Gzip file
     if os.path.splitext(src)[1].lower() in GZIP_FILE_TYPES:
         file_headers['Content-Encoding'] = 'gzip'
@@ -99,13 +95,7 @@ def deploy_folder(bucket_name, src, dst, headers={}, ignore=[]):
 
             src_path = os.path.join(local_path, name)
 
-            skip = False
-
-            for pattern in ignore:
-                if fnmatch(src_path, pattern):
-                    skip = True
-                    break
-
+            skip = any(fnmatch(src_path, pattern) for pattern in ignore)
             if skip:
                 continue
 
@@ -116,10 +106,7 @@ def deploy_folder(bucket_name, src, dst, headers={}, ignore=[]):
 
             to_deploy.append((src_path, dst_path))
 
-    if bucket_name == app_config.STAGING_S3_BUCKET:
-        public = False
-    else:
-        public = True
+    public = bucket_name != app_config.STAGING_S3_BUCKET
     bucket = utils.get_bucket(bucket_name)
     logger.info(dst)
     for src, dst in to_deploy:
